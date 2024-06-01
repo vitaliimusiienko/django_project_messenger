@@ -5,13 +5,18 @@
         <meta name="viewport" content="wight-device-wight, initial-scale=1">
         <title>{% block title %}{% endblock %}</title>
         <script src="http://cdn.tailwindcss.com"></script>
+        <style>
+            .messages {
+                height: 400px;
+                overflow: auto;
+            }
+        </style>
     </head>
     <body class="bg-gray-600">
         <nav class="flex items-center justify-between px-4 py-6 bg-gray-700">
             <div>
                 <a href="/" class="text-xl text-white">{% block page %}{% endblock %}</a>
             </div>
-
             <div class="flex items-center space-x-4">
                 {% if request.user.is_authenticated %}
                     <a href="/message/" class="text-white hover:text-grey-200">New message</a>
