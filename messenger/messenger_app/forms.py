@@ -4,6 +4,8 @@ from .models import Message
 class NewMessageForm(ModelForm):
     class Meta:
         model = Message
-        fields = {
-            'text'
-        }
+        fields = [
+            'text',
+            'user',
+            'chat',
+        ]

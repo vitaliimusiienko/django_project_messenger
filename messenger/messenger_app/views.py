@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,reverse
 from .models import Chats,Message
 from .forms import NewMessageForm
 
@@ -14,18 +14,21 @@ def chat(request, slug):
 
     return render(request, 'messenger_app/chat.html', {'chat':chat, 'messages':messages})
 
-def new_message(request,slug):
+def new_message(request, slug):
     chat = Chats.objects.get(slug=slug)
-
     error = ''
     
+    
     if request.method == 'POST':
-        message = NewMessageForm(request.POST)
+        message_data = {}
+        message_data['text'] = request.POST.get('content')
+        message_data['chat'] = chat
+        message_data['user'] = request.user
+        message = NewMessageForm(message_data)
         if message.is_valid:
-            message.save(commit=False)
-            return request(message)
+            message.save()
         else:
-            error = 'Try again'
+            error = 'try again'
             
     messages = NewMessageForm()
     context = {
@@ -33,7 +36,7 @@ def new_message(request,slug):
         'messages':messages,
         'error':error
     }
-    return redirect('chats')
+    return redirect(reverse('chat', kwargs={'slug':slug}))
     
 
 # Create your views here.
