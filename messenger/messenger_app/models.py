@@ -26,12 +26,7 @@ class Message(models.Model):
         return True
     
     def can_delete_message(self, user):
-        if user.is_superuser:
-            return True
-        
-        if self.user:
-            return self.user == user
-        return True
+        return user == self.user or user.is_superuser
     
     
     class Meta:

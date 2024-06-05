@@ -10,18 +10,21 @@
             {% csrf_token %}<input type="text" name="edited_text" value="{{ message.text }}">
             <button type="submit">Edit</button>
         </form>
-        {% else %}
-        {{ message.text }}
-        {% endif %}
-        <small>{{ message.date_published }}</small>
-    </form>
-    <form action="{% url 'delete_message' chat.slug message.id %}" method="post">
-        {% csrf_token %}
-        <button type="submit">Delete</button><br>{% endfor %}
+        <form action="{% url 'delete_message' chat.slug message.id %}" method="post">
+            {% csrf_token %}
+            <button type="submit">Delete</button>
+        </form>
+            {% else %}
+        <form>
+            {{ message.text }}
+            {% endif %}
+            <small>{{ message.date_published }}</small><br>
+        </form>
+        {% endfor %}
     </div>
 </div>
 <div class="lg:w-2/4 mt-6 mx-4 lg:mx-auto p-4 bg-white rounded-xl">
-    <form method="post" action="new_message" class="flex">
+    <form method="post" action="{% url 'new_message' chat.slug %}" class="flex">
         {% csrf_token %}
         <input type="text" name="content" class="flex-1 mr-3"
         placeholder="Your message..." id="chat-message-input">

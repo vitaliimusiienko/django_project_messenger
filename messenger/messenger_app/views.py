@@ -62,7 +62,6 @@ def new_message(request, slug):
     return redirect(reverse('chat', kwargs={'slug':slug}))
 
 
-@permission_required('messenger_app.can_edit_message')
 def edit_message(request,message_id,slug):
     edit_datetime = datetime.now()
     if request.method == 'POST':
@@ -76,12 +75,15 @@ def edit_message(request,message_id,slug):
     
     return redirect(reverse('chat', kwargs={'slug':slug}))
 
-
-@permission_required('messenger_app.can_delete_message')
+@login_required
 def delete_message(request,message_id,slug):
     message = Message.objects.get(pk=message_id)
-    if request.user:
+    if message.can_delete_message(request.user):
         message.delete()
+        return redirect(reverse('chat', kwargs={'slug':slug}))
     
-    return redirect(reverse('chat', kwargs={'slug':slug}))
+    else:
+        return redirect('homepage')
+    
+    
             
