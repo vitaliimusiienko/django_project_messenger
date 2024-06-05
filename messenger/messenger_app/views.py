@@ -61,7 +61,7 @@ def new_message(request, slug):
     }
     return redirect(reverse('chat', kwargs={'slug':slug}))
 
-
+@permission_required('messenger_app.can_edit_message', raise_exception=True)
 def edit_message(request,message_id,slug):
     edit_datetime = datetime.now()
     if request.method == 'POST':
