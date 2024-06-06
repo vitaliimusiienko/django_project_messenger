@@ -5,7 +5,7 @@
 <div class="lg:w-2/4 mx -4 lg:mx-auto p-4 bg-white rounded-xl">
     <div class="chat-messages space-y-3" id="chat-messages">
         {% for message in messages %}<b>{{ message.user.username }}</b>:
-        {% if message.user == request.user %}
+        {% if request.user == message.user or user.is_superuser %}
         <form action="{% url 'edit_message' chat.slug message.id %}" method="post">
             {% csrf_token %}<input type="text" name="edited_text" value="{{ message.text }}">
             <button type="submit">Edit</button>
@@ -14,12 +14,12 @@
             {% csrf_token %}
             <button type="submit">Delete</button>
         </form>
-            {% else %}
+        {% else %}
+        {{ message.text }}
         <form>
-            {{ message.text }}
-            {% endif %}
-            <small>{{ message.date_published }}</small><br>
+            <small>{{ message.updated_at }}</small><br>
         </form>
+        {% endif %}
         {% endfor %}
     </div>
 </div>
