@@ -34,10 +34,12 @@ class ChatView(LoginRequiredMixin,View):
     def get(self,request,slug):
         chat = Chats.objects.get(slug=slug)
         messages = Messages.objects.filter(chat=chat)[0:25]
+        django_messages_for_template = django_messages.get_messages(request)
         
         context = {
             'chat':chat,
-            'messages':messages
+            'messages':messages,
+            'django_message':django_messages_for_template
         }
         return render(request,self.template_name, context=context)
     
@@ -55,11 +57,10 @@ class CreateMessageView(LoginRequiredMixin,View):
             if message_form.is_valid:
                 message_form.save()
                 if receiver.is_superuser:
-                    django_messages.success(request, 'you succesfully sent the message to the superuser')
-        
+                    django_messages.success(request, 'You succesfully sent the message to the superuser')
         message_form = NewMessageForm()
             
-        return redirect(reverse('chat',kwargs={'slug':slug}))
+        return redirect(reverse('chat', kwargs={'slug':slug}))
     
             
     

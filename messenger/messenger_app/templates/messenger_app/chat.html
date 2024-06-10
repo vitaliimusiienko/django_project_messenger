@@ -49,11 +49,14 @@
     </form>
 </div>
 {% endif %}
-<div class="lg:w-2/4 mt-6 mx-4 lg:mx-auto p-4 bg-white rounded-xl">
-    {% if django_messages %}
-        {% for msg in django_messages %}
-            <div class="alert {{ msg.tags }}">{{ msg }}</div>
-        {% endfor %}
-    {% endif %}
+{% if django_messages %}
+{% for message in django_messages %}
+<div class="alert alert-{{ message.tags }}">
+    {% if message.tags == 'success' %}
+    <strong>Success</strong>
+     {% endif %}
+     {{message}}
 </div>
+{% endfor %}
+{% endif %}
 {% endblock %}
