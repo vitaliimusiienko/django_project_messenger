@@ -19,7 +19,8 @@ class TimeStampMixin(models.Model):
 
 class Messages(TimeStampMixin,models.Model):
     chat = models.ForeignKey(Chats, related_name='messages', on_delete=models.CASCADE)
-    user = models.ForeignKey(User, related_name='messages', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, related_name='sender', on_delete=models.CASCADE)
+    receiver = models.ForeignKey(User,related_name='receiver', on_delete=models.DO_NOTHING)
     text = models.TextField(null=True, blank=True)
     
     
@@ -45,4 +46,8 @@ class Messages(TimeStampMixin,models.Model):
     class Meta:
         permissions = [('can_edit_message', 'user can edit message'),
                       ('can_delete_message', 'user can delete message'),]
-
+ 
+class MessageLog(models.Model):
+    message = models.OneToOneField(Messages,related_name='log',on_delete=models.CASCADE)
+    message_log = models.CharField(max_length=500)
+    timestamp = models.DateTimeField(auto_now_add=True)

@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from datetime import datetime
 from .mixins import StaffMemberRequiredMixin,LoginRequiredMixin,CanEditMessageMixin,CanDeleteMessageMixin
 from django.views.generic import View
+from django.contrib import messages as django_messages
     
 class AddToChatView(StaffMemberRequiredMixin,LoginRequiredMixin,View):
     def post(self, request, chat_id):
@@ -44,16 +45,23 @@ class CreateMessageView(LoginRequiredMixin,View):
     def post(self,request,slug):
         chat = Chats.objects.get(slug=slug)
         if request.method =='POST':
+            receiver_username = request.POST.get('receiver')
+            receiver = User.objects.get(username=receiver_username)
             message_data = {'chat':chat,
                         'user':request.user,
+                        'receiver':receiver,
                         'text':request.POST.get('content')}
-            message = NewMessageForm(message_data)
-            if message.is_valid:
-                message.save()
+            message_form = NewMessageForm(message_data)
+            if message_form.is_valid:
+                message_form.save()
+                if receiver.is_superuser:
+                    django_messages.success(request, 'you succesfully sent the message to the superuser')
         
-        message = NewMessageForm()
+        message_form = NewMessageForm()
             
         return redirect(reverse('chat',kwargs={'slug':slug}))
+    
+            
     
 class EditMessageView(CanEditMessageMixin,View):
     def post(self,request,message_id,slug):

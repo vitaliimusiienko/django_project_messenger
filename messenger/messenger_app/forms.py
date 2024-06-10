@@ -7,5 +7,6 @@ class NewMessageForm(ModelForm):
         fields = [
             'text',
             'user',
+            'receiver',
             'chat',
         ]
