@@ -51,3 +51,10 @@ class MessageLog(models.Model):
     message = models.OneToOneField(Messages,related_name='log',on_delete=models.CASCADE)
     message_log = models.CharField(max_length=500)
     timestamp = models.DateTimeField(auto_now_add=True)
+    
+class UserStatus(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    is_online = models.BooleanField(default=False)
+    
+    def __str__(self):
+        return f"{self.user.username} - {'Online' if self.is_online else 'Offline'}"

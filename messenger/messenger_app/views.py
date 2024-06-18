@@ -1,5 +1,6 @@
 from django.shortcuts import render,redirect,reverse
-from .models import Chats,Messages,ChatsMembership
+from .models import Chats,Messages,ChatsMembership, UserStatus
+from django.http import JsonResponse
 from .forms import NewMessageForm
 from django.contrib.auth.models import User
 from datetime import datetime
@@ -34,7 +35,9 @@ class ChatView(LoginRequiredMixin,View):
     def get(self,request,slug):
         chat = Chats.objects.get(slug=slug)
         messages = Messages.objects.filter(chat=chat)[0:25]
+        django_messages.success(request, 'hello world')
         django_messages_for_template = django_messages.get_messages(request)
+        
         
         context = {
             'chat':chat,
@@ -83,4 +86,14 @@ class DeleteMessageView(CanDeleteMessageMixin,View):
         if message.can_delete_message(request.user):
             message.delete()
         return redirect(reverse('chat',kwargs={'slug':slug}))
+    
+def user_status(request, username):
+    try:
+        user = User.objects.get(username=username)
+        status = UserStatus.objects.get(user=user)
+        return JsonResponse({'username':user.username, 'is_online':status.is_online})
+    except User.DoesNotExist:
+        return JsonResponse({'error':'UserDoesNotExist'}, status=404)
+    except UserStatus.DoesNotExist:
+        return JsonResponse({'username':user.username, 'is_online': False})
             

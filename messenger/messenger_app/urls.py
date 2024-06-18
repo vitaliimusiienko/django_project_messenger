@@ -7,6 +7,7 @@ urlpatterns = [
     path('<slug:slug>/new_message', views.CreateMessageView.as_view(), name='new_message'),
     path('<slug:slug>/edit_message/<int:message_id>', views.EditMessageView.as_view(), name='edit_message'),
     path('<slug:slug>/delete_message/<int:message_id>', views.DeleteMessageView.as_view(), name='delete_message'),
-    path('add_to_chat/<int:chat_id>/', views.AddToChatView.as_view(), name='add_to_chat')
+    path('add_to_chat/<int:chat_id>/', views.AddToChatView.as_view(), name='add_to_chat'),
+    path('user_status/<str:username>/', views.user_status, name='user_status')
     
 ]

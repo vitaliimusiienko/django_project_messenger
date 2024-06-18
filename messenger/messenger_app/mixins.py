@@ -1,23 +1,22 @@
 from django.views.generic import View
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
-from django.db import models
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from .models import Messages
 from django.utils import timezone
 from datetime import timedelta
 
 class StaffMemberRequiredMixin(View):
-    @classmethod
     
+    @classmethod
     def as_view(cls, **kwargs):
         view = super().as_view(**kwargs)
         
         return staff_member_required(view)
     
 class LoginRequiredMixin(View):
-    @classmethod
     
+    @classmethod
     def as_view(cls, **kwargs):
         view = super().as_view(**kwargs)
         
