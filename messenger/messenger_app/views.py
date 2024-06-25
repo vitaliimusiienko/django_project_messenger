@@ -98,4 +98,3 @@ def user_status(request, username):
     except UserStatus.DoesNotExist:
         is_online = False
     return JsonResponse({'username':user.username, 'is_online':is_online})
-            

@@ -5,7 +5,7 @@
 <div class="lg:w-2/4 mx -4 lg:mx-auto p-4 bg-white rounded-xl">
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const messageElements = document.querySelectorAll('.message-sender')
+            const messageElements = document.querySelectorAll('.message-user')
                   messageElements.forEach(element => {
                     const username = element.innerText.trim();
 
@@ -99,3 +99,4 @@
     </form>
 </div>
 {% endif %}
+{% endblock %}

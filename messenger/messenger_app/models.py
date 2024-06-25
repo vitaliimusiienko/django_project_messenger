@@ -6,6 +6,9 @@ class Chats(models.Model):
     name = models.CharField(max_length=100)
     slug = models.SlugField(unique=True)
     
+    def __str__(self):
+        return self.name
+    
 class ChatsMembership(models.Model):
     chat = models.ForeignKey(Chats, on_delete=models.DO_NOTHING)
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
