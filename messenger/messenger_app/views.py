@@ -35,14 +35,13 @@ class ChatView(LoginRequiredMixin,View):
     def get(self,request,slug):
         chat = Chats.objects.get(slug=slug)
         messages = Messages.objects.filter(chat=chat)[0:25]
-        django_messages.success(request, 'hello world')
         django_messages_for_template = django_messages.get_messages(request)
         
         
         context = {
             'chat':chat,
             'messages':messages,
-            'django_message':django_messages_for_template
+            'django_messages':django_messages_for_template
         }
         return render(request,self.template_name, context=context)
     
@@ -90,10 +89,13 @@ class DeleteMessageView(CanDeleteMessageMixin,View):
 def user_status(request, username):
     try:
         user = User.objects.get(username=username)
-        status = UserStatus.objects.get(user=user)
-        return JsonResponse({'username':user.username, 'is_online':status.is_online})
     except User.DoesNotExist:
         return JsonResponse({'error':'UserDoesNotExist'}, status=404)
+    
+    try:
+        status = UserStatus.objects.get(user=user)
+        is_online = status.is_online
     except UserStatus.DoesNotExist:
-        return JsonResponse({'username':user.username, 'is_online': False})
+        is_online = False
+    return JsonResponse({'username':user.username, 'is_online':is_online})
             

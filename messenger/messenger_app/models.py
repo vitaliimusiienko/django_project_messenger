@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from datetime import timezone, datetime, timedelta
+from datetime import timezone, timedelta
 
 class Chats(models.Model):
     name = models.CharField(max_length=100)
@@ -53,7 +53,7 @@ class MessageLog(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     
 class UserStatus(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.DO_NOTHING)
     is_online = models.BooleanField(default=False)
     
     def __str__(self):
