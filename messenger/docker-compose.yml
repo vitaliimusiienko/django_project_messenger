@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  db: 
+    image: postgres:13
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: messenger
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - DJANGO_SETTINGS_MODULE=messenger.settings
+      - DATABASE_URL=postgres://user:password@db:5432/messenger
+
+  celery:
+    build: .
+    command: celery -A messenger worker --loglevel=info
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+    environment:
+      - DJANGO_SETTINGS_MODULE=messenger.settings
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+
+  beat:
+    build: .
+    command: celery -A django_project_messenger beat --loglevel=info
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+    environment:
+      - DJANGO_SETTINGS_MODULE=messenger.settings
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+
+  redis:
+    image: redis:latest
+
+volumes:
+  postgres_data:
